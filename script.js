@@ -206,12 +206,32 @@ Tree.prototype = {
     var graphArray = [blocks[0]];
 
     var expandRight = function(p, length) {
-      var offset = length % 2 ? length: length + 1;
-      graphArray.filter(function(b){
-        return b.x > p.x && b.y <= p.y;
-      }).forEach(function(b){
+      var offset, offsetParent;
+      // if (length % 2 === 0 && length > 2) {
+      //   offset = length/2;
+      // }
+      // else if (length % 2 === 0) {
+      //   offset = 1;
+      // }
+      // else {
+      //   offset = Math.floor(length/2);
+      // };
 
-        b.x += offset - 1;
+      if (length % 2 === 0) {
+        offset = length + 1;
+      }
+      else {
+        offset = length;
+      }
+
+
+
+      graphArray.filter(function(b){
+        return b.x >= p.x && b.y <= p.y;
+      }).forEach(function(b){
+        if (b !== p) {
+          b.x += offset;
+        }
       });
       // p.x = (length % 2 === 0) ? (p.childs[p.childs.length - 1].x - 2) : (p.childs[Math.floor(length/2)].x)
       // p.x += (length % 2) ? Math.floor(offset/2)
@@ -308,7 +328,8 @@ Tree.prototype = {
         }
 
       }//end for
-
+      self._layer.removeChildren();
+      console.assert(self._layer.children.length === 0)
       self._layer.add(group);
 
       self._draw();
@@ -359,8 +380,9 @@ Tree.prototype = {
   loadFromJson: function(graph) {
     var self = this;
 
-    self._layer.removeChildren();
-
+    // self._layer.removeChildren();
+    // self._draw();
+    // return;
     var vertexes = graph.v.map(function(v){
       var v = new Vertex({
         x: 0,
